@@ -1,0 +1,11 @@
+db
+        .collection('users')
+        .add(newUser)
+        .then(doc =>{
+            res.json({ message: `document ${doc.id} created successfully`});
+            return firebase
+            .auth()
+            .createUserWithEmailAndPassword(newUser.email, newUser.password);
+    })
+
+    
