@@ -1,6 +1,9 @@
 const {admin,db} = require('./admin');
 
 module.exports = (req, res,next) =>{
+
+
+  
     //token needs to start with bearer space
     let idToken;
     if (

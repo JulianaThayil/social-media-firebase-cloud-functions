@@ -5,8 +5,19 @@ const { getAllRecipes,postRecipe ,getRecipe,deleteRecipe,likeRecipe,unlikeRecipe
 const { signup,login, uploadImage,addUserDetails,getAuthenticatedUser,getUserDetails,markNotificationsRead } = require('./handlers/users');
 
 
-const express = require('express');
-const app = express();
+var express = require('express')
+var cors = require('cors')
+var app = express()
+
+//enables cors
+app.use(cors({
+  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'exposedHeaders': ['sessionId'],
+  'origin': '*',
+  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  'preflightContinue': false,
+  'Access-Control-Allow-Origin': '*'
+}));
 
 const FBAuth =require('./util/fbAuth');
 
@@ -35,10 +46,10 @@ app.post('/notifications', FBAuth, markNotificationsRead);
 
 
 //https://baseUrl.com/api/
-exports.api = functions.https.onRequest(app);
+exports.api = functions.region('asia-northeast1').https.onRequest(app);
 
 exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
-  .onCreate((snapshot) => {
+.onCreate((snapshot) => {
     return db.doc(`/recipes/${snapshot.data().recipeId}`)
       .get()
       .then((doc) => {
@@ -115,7 +126,6 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
   });
 
 exports.onRecipeDelete = functions
-  .region('europe-west1')
   .firestore.document('/recipes/{recipeId}')
   .onDelete((snapshot, context) => {
     const recipeId = context.params.recipeId;

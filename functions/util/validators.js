@@ -13,15 +13,15 @@ exports.validateSignupData = (data) => {
   let errors = {};
 
   if (isEmpty(data.email)) {
-    errors.email = 'Must not be empty';
+    errors.email = '*Email must not be empty';
   } else if (!isEmail(data.email)) {
-    errors.email = 'Must be a valid email address';
+    errors.email = '*Please enter valid email address';
   }
 
-  if (isEmpty(data.password)) errors.password = 'Must not be empty';
+  if (isEmpty(data.password)) errors.password = '*Must not be empty';
   if (data.password !== data.confirmPassword)
-    errors.confirmPassword = 'Passwords must match';
-  if (isEmpty(data.handle)) errors.handle = 'Must not be empty';
+    errors.confirmPassword = '*Passwords must match';
+  if (isEmpty(data.handle)) errors.handle = '*Must not be empty';
 
   return {
     errors,
@@ -32,8 +32,8 @@ exports.validateSignupData = (data) => {
 exports.validateLoginData = (data) => {
   let errors = {};
 
-  if (isEmpty(data.email)) errors.email = 'Must not be empty';
-  if (isEmpty(data.password)) errors.password = 'Must not be empty';
+  if (isEmpty(data.email)) errors.email = '* Must not be empty';
+  if (isEmpty(data.password)) errors.password = '* Must not be empty';
 
   return {
     errors,
