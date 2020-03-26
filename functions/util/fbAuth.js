@@ -18,7 +18,6 @@ module.exports = (req, res,next) =>{
     }
   
     //verify where tis was request by our application only
-  
     admin
       .auth()
       .verifyIdToken(idToken)
