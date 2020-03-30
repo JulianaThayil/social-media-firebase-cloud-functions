@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 module.exports = {
   apiKey: "AIzaSyDZDYNoTcSesSR6a1Vyf25P_oTzZKaTO90",
   authDomain: "step-by-step-96e75.firebaseapp.com",
@@ -9,6 +8,4 @@ module.exports = {
   appId: "1:593075018975:web:4d6a21fdbaf1ca99cf5d6a",
   measurementId: "G-KQQTR83J4N"
   };
-=======
 
->>>>>>> 89349d57d88c54398dd37b298161dc735e1ac12f

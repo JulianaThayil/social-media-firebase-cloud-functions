@@ -3,10 +3,13 @@ const config = require('../util/config');
 
 const firebase = require('firebase');
 firebase.initializeApp(config);
+var cors = require('cors');  
 
 const { validateSignupData , validateLoginData, reduceUserDetails} = require('../util/validators');
 
 exports.signup = (req,res)=>{
+  cors(req, res, () => {});
+  res.set('Access-Control-Allow-Headers', 'Bearer, Content-Type');
 
     const newUser = {
       email: req.body.email,
@@ -67,6 +70,10 @@ exports.signup = (req,res)=>{
   };
 
   exports.login = (req,res) => {
+    cors(req, res, () => {});
+    res.set('Access-Control-Allow-Headers', 'Bearer, Content-Type');
+
+
     const user ={
       email: req.body.email,
       password:req.body.password
@@ -96,8 +103,10 @@ exports.signup = (req,res)=>{
   }
 
 
-//add user details
+//add/edit user details
 exports.addUserDetails = (req, res) => {
+  cors(req, res, () => {});
+
   let userDetails = reduceUserDetails(req.body);
 
   db
@@ -111,8 +120,14 @@ exports.addUserDetails = (req, res) => {
       return res.status(500).json({ error: err.code });
     });
 };
+
 // Get any user's details
 exports.getUserDetails = (req, res) => {
+
+  cors(req, res, () => {});
+  res.set('Access-Control-Allow-Headers', 'Bearer, Content-Type');
+
+
   let userData = {};
   db.doc(`/users/${req.params.handle}`)
     .get()
@@ -151,6 +166,9 @@ exports.getUserDetails = (req, res) => {
 
 // Get own user details
 exports.getAuthenticatedUser = (req, res) => {
+  cors(req, res, () => {});
+  res.set('Access-Control-Allow-Headers', 'Bearer, Content-Type');
+
   let userData = {};
   db.doc(`/users/${req.user.handle}`)
     .get()
@@ -199,6 +217,8 @@ exports.getAuthenticatedUser = (req, res) => {
 
   // Upload a profile image for user
   exports.uploadImage  = (req, res,user) => {
+    cors(req, res, () => {});
+
     const BusBoy = require('busboy');
     const path = require('path');
     const os = require('os');
@@ -236,13 +256,11 @@ exports.getAuthenticatedUser = (req, res) => {
           
         })
         .then(() => {
-          console.log("yes");
           const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${
           config.storageBucket
         }/o/${imageFileName}?alt=media`;
         return db.doc(`/users/${req.user.handle}`) 
         .set({ imageUrl : imageUrl },{ merge: true });
-      //NOT_FOUND: No document to update: projects/step-by-step-96e75/databases/(default)/documents/users/8zKnshocY3cCjuZbKeMK7vqhrAk1  
       })
         .then(() => {
           return res.json({ message: 'image uploaded successfully' });
@@ -256,6 +274,8 @@ exports.getAuthenticatedUser = (req, res) => {
   };
 
   exports.markNotificationsRead = (req, res) => {
+    cors(req, res, () => {});
+
     let batch = db.batch();
     req.body
     .forEach((notificationId) => {

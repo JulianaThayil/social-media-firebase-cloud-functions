@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 
 const { db } = require('./util/admin');
-const { getAllRecipes,postRecipe ,getRecipe,deleteRecipe,likeRecipe,unlikeRecipe,commentOnRecipe} = require('./handlers/recipes');
+const { getAllRecipes,postRecipe ,getRecipe,deleteRecipe,likeRecipe,unlikeRecipe,commentOnRecipe,uploadPicture} = require('./handlers/recipes');
 const { signup,login, uploadImage,addUserDetails,getAuthenticatedUser,getUserDetails,markNotificationsRead } = require('./handlers/users');
 
 
@@ -11,21 +11,22 @@ var app = express()
 
 //enables cors
 app.use(cors({
-  'allowedHeaders': ['sessionId', 'Content-Type'],
+  'allowedHeaders': '*',
   'exposedHeaders': ['sessionId'],
   'origin': '*',
   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
   'preflightContinue': false,
-  'Access-Control-Allow-Origin': '*'
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*'
 }));
 
 const FBAuth =require('./util/fbAuth');
-
 
 //route to get all the recipe
 app.get('/recipes', getAllRecipes );
 //route to post recipes
 app.post('/recipe',FBAuth, postRecipe );
+app.post('/recipe/:recipeId/image', FBAuth, uploadPicture);
 app.get('/recipe/:recipeId', getRecipe);
 app.delete('/recipe/:recipeId', FBAuth, deleteRecipe);
 app.get('/recipe/:recipeId/like', FBAuth, likeRecipe);
