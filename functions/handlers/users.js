@@ -124,10 +124,6 @@ exports.addUserDetails = (req, res) => {
 // Get any user's details
 exports.getUserDetails = (req, res) => {
 
-  cors(req, res, () => {});
-  res.set('Access-Control-Allow-Headers', 'Bearer, Content-Type');
-
-
   let userData = {};
   db.doc(`/users/${req.params.handle}`)
     .get()
@@ -146,7 +142,7 @@ exports.getUserDetails = (req, res) => {
     .then((data) => {
       userData.recipes = [];
       data.forEach((doc) => {
-        userData.recipes.push({
+          userData.recipes.push({
           body: doc.data().body,
           createdAt: doc.data().createdAt,
           userHandle: doc.data().userHandle,

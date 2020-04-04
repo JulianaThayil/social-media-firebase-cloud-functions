@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 
 const { db } = require('./util/admin');
-const { getAllRecipes,postRecipe ,getRecipe,deleteRecipe,likeRecipe,unlikeRecipe,commentOnRecipe,uploadPicture} = require('./handlers/recipes');
+const { getAllRecipes,postRecipe ,getRecipe,deleteRecipe,likeRecipe,unlikeRecipe,commentOnRecipe} = require('./handlers/recipes');
 const { signup,login, uploadImage,addUserDetails,getAuthenticatedUser,getUserDetails,markNotificationsRead } = require('./handlers/users');
 
 
@@ -26,7 +26,6 @@ const FBAuth =require('./util/fbAuth');
 app.get('/recipes', getAllRecipes );
 //route to post recipes
 app.post('/recipe',FBAuth, postRecipe );
-app.post('/recipe/:recipeId/image', FBAuth, uploadPicture);
 app.get('/recipe/:recipeId', getRecipe);
 app.delete('/recipe/:recipeId', FBAuth, deleteRecipe);
 app.get('/recipe/:recipeId/like', FBAuth, likeRecipe);
@@ -120,6 +119,28 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}')
           data.forEach((doc) => {
             const recipe = db.doc(`/recipes/${doc.id}`);
             batch.update(recipe, { userImage: change.after.data().imageUrl });
+          });
+          return batch.commit();
+        });
+    } else return true;
+  });
+
+  exports.onUserImageChangeCommentImage = functions
+  .firestore.document('/users/{userId}')
+  .onUpdate((change) => {
+    console.log(change.before.data());
+    console.log(change.after.data());
+    if (change.before.data().imageUrl !== change.after.data().imageUrl) {
+      console.log('image has changed');
+      const batch = db.batch();
+      return db
+        .collection('comments')
+        .where('userHandle', '==', change.before.data().handle)
+        .get()
+        .then((data) => {
+          data.forEach((doc) => {
+            const comment = db.doc(`/comments/${doc.id}`);
+            batch.update(comment, { userImage: change.after.data().imageUrl });
           });
           return batch.commit();
         });
